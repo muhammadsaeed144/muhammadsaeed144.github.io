@@ -15,7 +15,7 @@
     p.index = pi;
     p.list = p.films.map(function (f, i) {
       var id = p.slug + '-' + pad2(i + 1);
-      var film = { project: p, title: f[0], time: f[1], fmt: f[2], src: 'assets/films/' + id + '.mp4', poster: img(id) };
+      var film = { project: p, title: f[0], time: f[1], fmt: f[2], src: window.FILM_BASE + id + '.mp4', poster: img(id) };
       ALL.push(film);
       return film;
     });

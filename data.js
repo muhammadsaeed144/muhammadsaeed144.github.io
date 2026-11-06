@@ -1,4 +1,8 @@
 /* All site content lives here. Edit this file to change text, or add a project or film. */
+
+/* The films stay on GitHub Pages. The Vercel build skips them (see .vercelignore). */
+window.FILM_BASE = "https://muhammadsaeed144.github.io/assets/films/";
+
 window.PORTFOLIO = [
   {
     slug: "juno-babies", client: "Juno Babies", title: "Approved by Moms", kind: "Launch campaign",
