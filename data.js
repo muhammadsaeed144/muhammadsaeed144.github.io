@@ -9,8 +9,8 @@ window.CV_FILE = "assets/Muhammad-Saeed-CV.pdf";
 window.SOCIAL = {
   whatsapp: "https://wa.me/201094204021",
   linkedin: "https://www.linkedin.com/in/muhammadsaeeed",
-  instagram: "",
-  youtube: "",
+  instagram: "https://www.instagram.com/saeedtalks1/",
+  youtube: "https://www.youtube.com/@SaeedTalks1",
   facebook: ""
 };
 
