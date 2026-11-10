@@ -75,29 +75,40 @@
 <div class="marquee" aria-hidden="true"><div class="marquee-track" id="skills"></div></div>
 
 <section class="about" id="about">
-  <div class="about-bg"><img src="assets/img/about-theatre.jpg" alt="Muhammad Saeed on a theatre balcony" width="1200" height="1600" loading="lazy"></div>
+  <svg class="about-word reveal" viewBox="0 0 1000 300" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="aboutWordFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#5b86ff"/>
+        <stop offset=".5" stop-color="#2f56d0"/>
+        <stop offset="1" stop-color="#1b3794" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <text x="500" y="268" text-anchor="middle" textLength="992" lengthAdjust="spacingAndGlyphs" fill="url(#aboutWordFill)">STORYTELLER</text>
+  </svg>
+  <img class="about-person reveal" src="assets/img/about-person.png" alt="Muhammad Saeed" width="635" height="1100" loading="lazy">
   <div class="wrap about-inner">
-  <div class="about-left reveal">
-    <div class="now-chip">
-      <span>Now</span>
-      <p>Creative Team Lead, CeasComm</p>
-      <p>Founder, <a href="#breakdown">The Breakdown Show</a></p>
+    <div class="about-copy">
+      <p class="label reveal">About</p>
+      <h2 class="reveal">Business by degree.<br><em>Storyteller by trade.</em></h2>
+      <p class="about-role reveal">Senior creative copywriter · Filmmaker</p>
+      <p class="body reveal">I work where storytelling, creativity and digital strategy meet: copywriting, content direction, social strategy and filmmaking. From launch campaigns to AI-generated commercials to podcasts, I take ideas from the page to the screen.</p>
+      <div class="ctas reveal">
+        <a class="btn btn-grad" href="assets/Muhammad-Saeed-CV.pdf" download="Muhammad-Saeed-CV.pdf" data-icon="download" data-magnetic>Download my CV</a>
+        <a class="btn btn-ghost" href="#work" data-magnetic>See the work</a>
+      </div>
+      <p class="about-loc reveal">Based in Egypt · Working across the Gulf</p>
     </div>
-  </div>
-  <div class="about-copy">
-    <p class="label reveal">About</p>
-    <h2 class="reveal">Business by degree.<br><em>Storyteller by trade.</em></h2>
-    <p class="body reveal">I work where storytelling, creativity and digital strategy meet: copywriting, content direction, social strategy and filmmaking. From launch campaigns to AI-generated commercials to podcasts, I take ideas from the page to the screen.</p>
-    <dl class="stats reveal">
-      <div><dt>Years of experience</dt><dd data-count="6">6+</dd></div>
-      <div><dt>Projects delivered</dt><dd data-count="35">35+</dd></div>
-      <div><dt>Brands served</dt><dd data-count="25">25+</dd></div>
-    </dl>
-    <div class="ctas reveal">
-      <a class="btn btn-grad" href="assets/Muhammad-Saeed-CV.pdf" download="Muhammad-Saeed-CV.pdf" data-icon="download" data-magnetic>Download my CV</a>
-      <a class="btn btn-ghost" href="#work" data-magnetic>See the work</a>
+    <div class="about-side">
+      <div class="about-now reveal">
+        <span class="spark" aria-hidden="true">✦</span>
+        <div><b>Now</b>Creative Team Lead, CeasComm<br>Founder, <a href="#breakdown">The Breakdown Show</a></div>
+      </div>
+      <dl class="stats reveal">
+        <div><dt>Years of experience</dt><dd data-count="6">6+</dd></div>
+        <div><dt>Projects delivered</dt><dd data-count="35">35+</dd></div>
+        <div><dt>Brands served</dt><dd data-count="25">25+</dd></div>
+      </dl>
     </div>
-  </div>
   </div>
 </section>
 
