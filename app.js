@@ -206,6 +206,23 @@
   $('#socials').innerHTML = socHTML;
   $('#footSocials').innerHTML = socHTML;
 
+  /* ---------- Mobile menu ---------- */
+  var menuBtn = $('#menuBtn'), mnav = $('#mnav');
+  $('#mnavSocials').innerHTML = socHTML;
+  function setMenu(open) {
+    root.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    mnav.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if ('inert' in mnav) mnav.inert = !open;
+    lockScroll(open);
+  }
+  if ('inert' in mnav) mnav.inert = true;
+  menuBtn.addEventListener('click', function () { setMenu(!root.classList.contains('menu-open')); });
+  mnav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && root.classList.contains('menu-open')) { setMenu(false); menuBtn.focus(); } });
+  addEventListener('resize', function () { if (innerWidth > 860 && root.classList.contains('menu-open')) setMenu(false); });
+
   /* ---------- Film strip ---------- */
   var strip = $('#strip');
   function tileHTML(copy) {
