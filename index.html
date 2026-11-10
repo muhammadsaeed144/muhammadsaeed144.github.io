@@ -23,8 +23,19 @@
 <body>
 <a class="skip" href="#work">Skip to the work</a>
 
-<div class="boot" aria-hidden="true"><span class="boot-count">00:00:00:00</span><span class="boot-bar"><i></i></span></div>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="boot" aria-hidden="true">
+  <div class="clap">
+    <div class="clap-stick"></div>
+    <div class="clap-base"></div>
+    <div class="clap-body">
+      <div class="r1"><div class="c"><span>Production</span><b>Muhammad Saeed</b></div></div>
+      <div class="r2"><div class="c"><span>Roll</span><b>2026</b></div><div class="c"><span>Scene</span><b>01</b></div><div class="c"><span>Take</span><b class="blue">01</b></div></div>
+      <div class="r3"><div class="c"><span>Director</span><b>M. Saeed</b></div><div class="c"><span>Camera</span><b>A</b></div></div>
+    </div>
+  </div>
+  <span class="boot-count">00:00:00:00</span>
+  <i class="boot-flash"></i>
+</div>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
@@ -153,9 +164,9 @@
 
 <a class="wa" id="wa" href="https://wa.me/201094204021" target="_blank" rel="noopener" aria-label="Chat with Muhammad on WhatsApp"><span class="wa-ic" data-icon="whatsapp"></span><span class="wa-t">Chat on WhatsApp</span></a>
 
-<section class="case" id="case" role="dialog" aria-modal="true" aria-labelledby="caseTitle" hidden></section>
+<section class="case" id="case" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="caseTitle" hidden></section>
 
-<div class="player" id="player" role="dialog" aria-modal="true" aria-label="Film player" hidden>
+<div class="player" id="player" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Film player" hidden>
   <div class="player-top">
     <div><span id="pClient"></span><strong id="pTitle"></strong></div>
     <span class="player-n" id="pCount"></span>
@@ -171,6 +182,7 @@
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 
 <noscript><p style="padding:24px;color:#fff">This portfolio uses JavaScript to play the films. Email muuhammad.saeed192@gmail.com or <a href="assets/Muhammad-Saeed-CV.pdf">download the CV</a>.</p></noscript>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" integrity="sha384-B2WBjDzEjJpYvhmi2UyEn7rektqkf5suS6sNoyyrf0EBAwBHdkiXxIlU0V5Ru2ed" crossorigin="anonymous"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>

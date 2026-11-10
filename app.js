@@ -49,13 +49,13 @@
     return pad2(h) + ':' + pad2(m % 60) + ':' + pad2(s % 60) + ':' + pad2(f % 25);
   }
   if (!reduced) setInterval(function () { tc.textContent = code(performance.now() - start); }, 80);
-  setTimeout(function () { var b = $('.boot'); if (b) b.remove(); }, 2100);
+  setTimeout(function () { var b = $('.boot'); if (b) b.remove(); }, 3000);
   requestAnimationFrame(function () { setTimeout(function () { root.classList.add('ready'); }, 30); });
   if (boot) {
     var bt = setInterval(function () {
       var e = performance.now() - start;
       boot.textContent = code(e * 6);
-      if (e > 1200) clearInterval(bt);
+      if (e > 1700) clearInterval(bt);
     }, 40);
   }
 
@@ -93,7 +93,7 @@
     canvas.width = cw * d; canvas.height = ch * d;
     ctx.setTransform(d, 0, 0, d, 0, 0);
     var n = Math.min(110, Math.round(cw / 13));
-    var tints = ['255,255,255', '255,255,255', '255,255,255', '255,120,170', '160,140,255', '120,220,240'];
+    var tints = ['255,255,255', '255,255,255', '255,255,255', '255,255,255', '180,200,255'];
     specks = [];
     for (var i = 0; i < n; i++) specks.push({ x: Math.random() * cw, y: Math.random() * ch, r: 0.4 + Math.random() * 1.3, v: 0.05 + Math.random() * 0.22, p: Math.random() * 6.28, c: tints[i % tints.length] });
   }
@@ -102,7 +102,7 @@
       tx = 0.77 + Math.sin(t / 3400) * 0.05;
       ty = 0.31 + Math.cos(t / 2700) * 0.05;
     }
-    cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+    cx += (tx - cx) * 0.05; cy += (ty - cy) * 0.05;
     lit.style.setProperty('--mx', (cx * 100).toFixed(2) + '%');
     lit.style.setProperty('--my', (cy * 100).toFixed(2) + '%');
     var sy = Math.min(scrollY, ch);
@@ -130,6 +130,32 @@
       heroVisible = e[0].isIntersecting;
       if (heroVisible && !running) { running = true; requestAnimationFrame(frame); }
     }).observe(hero);
+  }
+
+  /* ---------- Smooth scrolling (Lenis), with plain smooth scrolling as the fallback ---------- */
+  var lenis = null;
+  if (window.Lenis && !reduced) {
+    lenis = new window.Lenis({ duration: 1.25, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true, gestureOrientation: 'vertical' });
+    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+  }
+  function scrollToTarget(el) {
+    if (lenis) lenis.scrollTo(el === 'top' ? 0 : el, { duration: 1.6 });
+    else if (el === 'top') scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    else el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var h = a.getAttribute('href');
+    if (h.indexOf('#/') === 0 || h === '#') return;
+    var el = h === '#top' ? 'top' : document.getElementById(h.slice(1));
+    if (!el) return;
+    e.preventDefault();
+    scrollToTarget(el);
+  });
+  function lockScroll(on) {
+    root.classList.toggle('locked', on);
+    if (lenis) { if (on) lenis.stop(); else lenis.start(); }
   }
 
   /* ---------- Scroll: nav, progress bar, hero parallax, marquee speed ---------- */
@@ -183,7 +209,7 @@
   /* ---------- Film strip ---------- */
   var strip = $('#strip');
   strip.innerHTML = ALL.map(function (f, i) {
-    return '<button type="button" class="tile ' + f.fmt + '" style="--c:' + f.project.tint + '" data-i="' + i + '" data-cursor="Play">' +
+    return '<button type="button" class="tile ' + f.fmt + '" data-i="' + i + '" data-cursor="Play">' +
       '<img src="' + f.poster + '" alt="" loading="lazy" draggable="false">' +
       '<span class="tile-t"><b>' + esc(f.title) + '</b><span>' + esc(f.project.client) + ' · ' + f.time + '</span></span></button>';
   }).join('');
@@ -262,7 +288,7 @@
     var media = p.collage
       ? p.list.slice(0, 3).map(function (f) { return '<img src="' + f.poster + '" alt="" loading="lazy" draggable="false">'; }).join('')
       : '<img src="' + img(p.cover) + '" alt="" loading="lazy" draggable="false"' + ((p.pos || p.zoom) ? ' style="' + (p.pos ? 'object-position:' + p.pos + ';' : '') + (p.zoom ? '--z:' + p.zoom : '') + '"' : '') + '>';
-    return '<article class="slide" data-i="' + i + '" style="--tint:' + p.tint + '" aria-label="' + (i + 1) + ' of ' + N + ': ' + esc(p.title) + '">' +
+    return '<article class="slide" data-i="' + i + '" aria-label="' + (i + 1) + ' of ' + N + ': ' + esc(p.title) + '">' +
       '<div class="slide-media">' + media + '</div>' +
       '<div class="slide-info"><p class="slide-kicker"><b>' + pad2(i + 1) + '</b>' + esc(p.client) + ' · ' + esc(p.kind) + '</p>' +
       '<h3>' + esc(p.title) + '</h3><p class="slide-lede">' + esc(p.lede) + '</p>' +
@@ -270,7 +296,7 @@
       '<a class="slide-open" href="#/' + p.slug + '" tabindex="-1">Open project →</a></div></div></article>';
   }).join('');
   dIdx.innerHTML = P.map(function (p, i) {
-    return '<button type="button" class="di" data-i="' + i + '" style="--tint:' + p.tint + '" aria-label="Show project ' + (i + 1) + ': ' + esc(p.title) + '"><img src="' + thumb(p) + '" alt="" loading="lazy"><i></i></button>';
+    return '<button type="button" class="di" data-i="' + i + '" aria-label="Show project ' + (i + 1) + ': ' + esc(p.title) + '"><img src="' + thumb(p) + '" alt="" loading="lazy"><i></i></button>';
   }).join('');
   var slides = $$('.slide', deck), chips = $$('.di', dIdx);
   function dist(i) { var d = i - cur; if (d > N / 2) d -= N; if (d < -N / 2) d += N; return d; }
@@ -294,7 +320,6 @@
       if (i !== cur) c.style.setProperty('--p', 0);
     });
     $('#deckCount').textContent = pad2(cur + 1) + ' / ' + pad2(N);
-    work.style.setProperty('--tint', P[cur].tint);
   }
   function go(i) {
     cur = (i % N + N) % N; elapsed = 0; layout(0);
@@ -349,7 +374,7 @@
   });
 
   /* Autoplay: pauses on hover, focus, drag, when off screen, or while a project or film is open. */
-  var DUR = 6500, elapsed = 0, lastT = 0, hovering = false, focusIn = false, workVisible = false, autoRunning = false;
+  var DUR = 7000, elapsed = 0, lastT = 0, hovering = false, focusIn = false, workVisible = false, autoRunning = false;
   deck.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
   deck.addEventListener('pointerleave', function () { hovering = false; });
   work.addEventListener('focusin', function () { focusIn = true; });
@@ -422,7 +447,6 @@
   function renderCase(p) {
     var next = P[(p.index + 1) % P.length];
     var tabs = [['The brief', p.brief], ['The idea', p.idea], ['My role', p.role]].filter(function (t) { return t[1]; });
-    box.style.setProperty('--tint', p.tint);
     box.innerHTML =
       '<div class="case-bar"><span>' + pad2(p.index + 1) + ' / ' + pad2(P.length) + ' · ' + esc(p.client) + '</span>' +
       '<button type="button" class="btn-sm" id="caseClose">Close ✕</button></div>' +
@@ -444,7 +468,7 @@
           '<img src="' + f.poster + '" alt="" loading="lazy"><span class="play" aria-hidden="true">▶</span>' +
           '<span class="film-t"><b>' + esc(f.title) + '</b><span>' + f.time + '</span></span></button>';
       }).join('') + '</div></div>' +
-      '<a class="case-next" href="#/' + next.slug + '" style="--ntint:' + next.tint + '"><small>Next project</small><strong>' + esc(next.title) + ' →</strong></a></div>';
+      '<a class="case-next" href="#/' + next.slug + '"><small>Next project</small><strong>' + esc(next.title) + ' →</strong></a></div>';
     box.scrollTop = 0;
     $('#caseClose').onclick = closeCase;
     var tabEls = $$('.tab', box), panel = $('#tabp');
@@ -475,13 +499,13 @@
     if (p) {
       if (box.hidden) { lastFocus = document.activeElement; box.hidden = false; }
       renderCase(p);
-      root.classList.add('locked');
+      lockScroll(true);
       document.title = p.title + ' — Muhammad Saeed';
       box.setAttribute('tabindex', '-1'); box.focus({ preventScroll: true });
       if (p.index !== cur) go(p.index);
     } else if (!box.hidden) {
       box.hidden = true; box.innerHTML = '';
-      root.classList.remove('locked');
+      lockScroll(false);
       document.title = 'Muhammad Saeed — Senior Creative Copywriter, Storyteller, Filmmaker';
       if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
     }
@@ -509,7 +533,7 @@
   function openPlayer(l, i, from) {
     list = l; at = i; plFocus = from;
     pl.hidden = false;
-    root.classList.add('locked', 'playing');
+    root.classList.add('playing'); lockScroll(true);
     hideCursor(); load();
     $('#pClose').focus();
   }
@@ -517,7 +541,7 @@
     vid.pause(); vid.removeAttribute('src'); vid.load();
     pl.hidden = true;
     root.classList.remove('playing');
-    if (box.hidden) root.classList.remove('locked');
+    if (box.hidden) lockScroll(false);
     if (plFocus) plFocus.focus({ preventScroll: true });
   }
   function step(d) { at = (at + d + list.length) % list.length; load(); }
