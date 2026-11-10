@@ -173,6 +173,18 @@ window.BREAKDOWN = {
   ]
 };
 
+/* Alexandria Short Film Festival: the 12th edition podcast that Muhammad hosts. Thumbnails live in assets/festival. */
+window.ASFF = {
+  youtube: "https://www.youtube.com/@ASFFest",
+  episodes: [
+    { label: "Trailer", thumb: "trailer", id: "Q_HLus5VNbA", title: "ASFF'12 Podcast", sub: "The trailer", time: "0:22" },
+    { n: 1, id: "57ZiDnI0WQM", guest: "Jaume Quiles", role: "Filmmaker", title: "كيف تصنع فيلماً قصيراً ناجحاً؟", time: "20:12" },
+    { n: 2, id: "jtDV2aKl6x8", guest: "Kyrellos Maximos", role: "Poster artist", title: "كواليس تصميم بوستر الدورة 12", time: "21:06" },
+    { n: 3, id: "msJc-n-ABD4", guest: "Mohamed Abdelrahman", role: "Film critic", title: "النقد السينمائي وتحديات الفيلم القصير", time: "19:14" },
+    { n: 4, id: "tXomeCcf1bU", guest: "Ahmed Hussein", role: "Director", title: "كيف تصنع أول فيلم قصير بإمكانيات محدودة؟", time: "32:11" }
+  ]
+};
+
 /* Years use decimals, so 2026.85 is roughly November 2026. */
 window.TIMELINE = [
   { track: 0, from: 2022, to: 2025, co: "Gammal Tech", role: "Media Director & Podcast Host", dates: "2022 – 2024" },
@@ -181,7 +193,7 @@ window.TIMELINE = [
   { track: 3, from: 2024, to: 2025, co: "The LEGO Group", role: "Videographer", dates: "2024" },
   { track: 2, from: 2024, to: 2026.85, co: "Ennab Agency", role: "Senior Creative Copywriter", dates: "2024 – Nov 2026" },
   { track: 0, from: 2025, to: 2026.85, co: "Blue Holding", role: "Senior Creative Copywriter", dates: "2025 – 2026" },
-  { track: 1, from: 2026, to: 2026.85, co: "Alexandria Short Film Festival", role: "Host", dates: "2026 – Now" },
+  { track: 1, from: 2026, to: 2026.85, co: "Alexandria Short Film Festival", role: "Host", dates: "2026 – Now", link: "#festival" },
   { track: 3, from: 2026, to: 2026.85, co: "CeasComm", role: "Creative Team Lead", dates: "2026 – Now", now: true },
   { track: 4, from: 2024.33, to: 2024.83, co: "Tayarah World", role: "Creative Copywriter", dates: "May – Oct 2024" },
   { track: 4, from: 2026, to: 2026.85, co: "The Breakdown Show", role: "Founder", dates: "Jan 2026 – Now", founder: true, link: "#breakdown" }

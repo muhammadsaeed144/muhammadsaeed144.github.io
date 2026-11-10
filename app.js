@@ -420,36 +420,41 @@
     setInterval(auto, 50);
   }
 
-  /* ---------- The Breakdown Show: embedded episodes (YouTube loads only when played) ---------- */
-  var BD = window.BREAKDOWN;
-  if (BD && $('#bdPlayer')) {
-    var bdPlayer = $('#bdPlayer'), bdList = $('#bdList'), bdCur = 0;
-    var bdThumb = function (e) { return 'assets/breakdown/ep' + e.n + '.jpg'; };
-    bdList.innerHTML = BD.episodes.map(function (e, i) {
-      return '<button type="button" class="bd-ep" data-i="' + i + '"><img src="' + bdThumb(e) + '" alt="" loading="lazy">' +
-        '<span><span class="n">Episode ' + pad2(e.n) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>With ' + esc(e.guest) + '</small></span></button>';
+  /* ---------- Embedded shows (The Breakdown Show, festival podcast). YouTube loads only when someone presses play. ---------- */
+  function setupShow(data, player, list, base, showName) {
+    if (!data || !player || !list) return;
+    var eps = data.episodes;
+    var tag = function (e) { return e.label || 'Episode ' + pad2(e.n); };
+    var thumbOf = function (e) { return base + (e.thumb || 'ep' + e.n) + '.jpg'; };
+    var sub = function (e) { return e.guest ? 'With ' + e.guest + (e.role ? ' · ' + e.role : '') : (e.sub || ''); };
+    var name = function (e) { return showName + ', ' + tag(e).toLowerCase() + (e.guest ? ' with ' + e.guest : ''); };
+    list.innerHTML = eps.map(function (e, i) {
+      return '<button type="button" class="bd-ep" data-i="' + i + '"><img src="' + thumbOf(e) + '" alt="" loading="lazy">' +
+        '<span><span class="n">' + esc(tag(e)) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>' + esc(sub(e)) + '</small></span></button>';
     }).join('');
-    var bdEps = $$('.bd-ep', bdList);
-    function bdMark(i) { bdEps.forEach(function (b, k) { b.classList.toggle('on', k === i); b.setAttribute('aria-current', k === i ? 'true' : 'false'); }); }
-    function bdFacade(i) {
-      var e = BD.episodes[i];
-      bdPlayer.innerHTML = '<button type="button" class="bd-facade" data-cursor="Play" aria-label="Play episode ' + e.n + ' with ' + esc(e.guest) + '">' +
-        '<img src="' + bdThumb(e) + '" alt="" loading="lazy"><span class="bd-play" aria-hidden="true">▶</span>' +
-        '<span class="bd-meta"><span class="n">Episode ' + pad2(e.n) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>With ' + esc(e.guest) + '</small></span></button>';
-      $('.bd-facade', bdPlayer).onclick = function () { bdPlay(i); };
+    var items = $$('.bd-ep', list);
+    function mark(i) { items.forEach(function (b, k) { b.classList.toggle('on', k === i); b.setAttribute('aria-current', k === i ? 'true' : 'false'); }); }
+    function facade(i) {
+      var e = eps[i];
+      player.innerHTML = '<button type="button" class="bd-facade" data-cursor="Play" aria-label="Play ' + esc(name(e)) + '">' +
+        '<img src="' + thumbOf(e) + '" alt="" loading="lazy"><span class="bd-play" aria-hidden="true">▶</span>' +
+        '<span class="bd-meta"><span class="n">' + esc(tag(e)) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>' + esc(sub(e)) + '</small></span></button>';
+      $('.bd-facade', player).onclick = function () { play(i); };
     }
-    function bdPlay(i) {
-      var e = BD.episodes[i];
-      bdPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + e.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="The Breakdown Show, episode ' + e.n + ' with ' + esc(e.guest) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    function play(i) {
+      var e = eps[i];
+      player.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + e.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="' + esc(name(e)) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
       hideCursor();
     }
-    bdList.addEventListener('click', function (ev) {
+    list.addEventListener('click', function (ev) {
       var b = ev.target.closest('.bd-ep');
       if (!b) return;
-      bdCur = +b.dataset.i; bdMark(bdCur); bdPlay(bdCur);
+      var i = +b.dataset.i; mark(i); play(i);
     });
-    bdMark(0); bdFacade(0);
+    mark(0); facade(0);
   }
+  setupShow(window.BREAKDOWN, $('#bdPlayer'), $('#bdList'), 'assets/breakdown/', 'The Breakdown Show');
+  setupShow(window.ASFF, $('#asffPlayer'), $('#asffList'), 'assets/festival/', 'Alexandria Short Film Festival podcast');
 
   /* ---------- Reveal, split headings, counters ---------- */
   function split(el) {

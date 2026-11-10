@@ -261,7 +261,7 @@ h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-
 .tile-t span{font-family:var(--mono);font-size:11px;color:#c8c8cc}
 
 /* the breakdown show */
-.bd{position:relative;padding-block:clamp(90px,12vw,170px);border-top:1px solid var(--line);--bd-blue:#003183;--bd-orange:#ff7f00}
+.bd{position:relative;padding-block:clamp(90px,12vw,170px);border-top:1px solid var(--line);--bd-blue:#003183;--show-accent:#ff7f00}
 .bd::before{content:"";position:absolute;right:0;top:0;width:min(900px,90vw);height:70%;pointer-events:none;background:radial-gradient(50% 50% at 70% 30%,rgba(0,49,131,.45),transparent 70%)}
 .bd .wrap{position:relative}
 .bd-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(30px,5vw,80px);align-items:center}
@@ -285,10 +285,10 @@ h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-
 .bd-facade:hover img{transform:scale(1.03)}
 .bd-facade::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(6,11,26,.9))}
 .bd-play{position:absolute;z-index:1;left:50%;top:50%;width:84px;height:84px;margin:-42px;border-radius:50%;display:grid;place-items:center;font-size:22px;padding-left:4px;
-  background:rgba(255,127,0,.92);color:#fff;box-shadow:0 18px 50px -12px rgba(255,127,0,.7);transition:transform .6s var(--ease-smooth)}
+  background:var(--show-accent);color:#fff;box-shadow:0 18px 50px -12px color-mix(in srgb,var(--show-accent) 70%,transparent);transition:transform .6s var(--ease-smooth)}
 .bd-facade:hover .bd-play{transform:scale(1.08)}
 .bd-meta{position:absolute;z-index:1;left:clamp(16px,2.4vw,28px);right:clamp(16px,2.4vw,28px);bottom:clamp(14px,2.2vw,26px)}
-.bd-meta .n{display:block;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--bd-orange);margin-bottom:6px}
+.bd-meta .n{display:block;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--show-accent);margin-bottom:6px}
 .bd-meta b{display:block;font-weight:500;font-size:clamp(20px,2.2vw,32px);letter-spacing:-.02em;line-height:1.2;unicode-bidi:plaintext}
 .bd-meta small{display:block;color:#d4d4d8;font-size:14px;margin-top:4px}
 .bd-list-wrap{position:relative;display:flex;flex-direction:column;min-height:0;min-width:0}
@@ -297,11 +297,26 @@ h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-
 .bd-list{position:absolute;top:30px;left:0;right:0;bottom:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
 .bd-ep{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;align-items:center;padding:7px;border-radius:12px;text-align:left;border:1px solid transparent;transition:background .5s var(--ease-smooth),border-color .5s}
 .bd-ep img{width:132px;aspect-ratio:16/9;object-fit:cover;border-radius:8px}
-.bd-ep .n{display:block;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--bd-orange)}
+.bd-ep .n{display:block;font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--show-accent)}
 .bd-ep b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:500;font-size:14px;line-height:1.3;margin-top:3px;unicode-bidi:plaintext}
 .bd-ep small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px}
 .bd-ep:hover{background:rgba(255,255,255,.04)}
-.bd-ep.on{background:rgba(255,127,0,.08);border-color:rgba(255,127,0,.45)}
+.bd-ep.on{background:color-mix(in srgb,var(--show-accent) 9%,transparent);border-color:color-mix(in srgb,var(--show-accent) 50%,transparent)}
+
+/* alexandria short film festival */
+.asff{--show-accent:#e0b23a;overflow:hidden}
+.asff::before{display:none}
+.asff-art{position:absolute;top:0;right:0;width:min(64vw,1040px);pointer-events:none;opacity:.9;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 38%),linear-gradient(to bottom,#000 55%,transparent 100%);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent 0%,#000 38%),linear-gradient(to bottom,#000 55%,transparent 100%);mask-composite:intersect}
+.asff-art img{width:100%;height:auto;filter:brightness(.88) saturate(.95);animation:asffDrift 22s ease-in-out infinite alternate}
+@keyframes asffDrift{to{transform:translate3d(-14px,10px,0) scale(1.03)}}
+.asff-head{position:relative;min-height:min(72vh,660px);display:flex;align-items:center}
+.asff-intro{max-width:640px;position:relative}
+.asff-logo{width:112px;height:112px;margin:0 0 28px;border-radius:18px;background:#fff;padding:10px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8)}
+.asff-logo img{width:100%;height:100%;object-fit:contain}
+.asff .arabic{font-size:clamp(20px,2.2vw,30px);color:#cfcfd6;margin-top:10px}
+.asff .bd-player{box-shadow:0 40px 100px -50px rgba(224,178,58,.45),0 0 0 1px rgba(255,255,255,.08)}
 
 /* clients */
 .clients{position:relative;padding-bottom:clamp(90px,12vw,160px)}
@@ -459,6 +474,8 @@ html.playing .wa{opacity:0;pointer-events:none}
   .bd-list{position:static;flex-direction:row;overflow-x:auto;overflow-y:visible;padding-bottom:6px}
   .bd-ep{flex:none;width:236px;grid-template-columns:1fr;align-items:start}
   .bd-ep img{width:100%}
+  .asff-art{width:100%;opacity:.42}
+  .asff-head{min-height:0;padding-top:clamp(120px,40vw,220px)}
   .deck{--sw:84vw;--sh:calc(var(--sw) * 1.22)}
   .case-hero{min-height:62vh}
 }
