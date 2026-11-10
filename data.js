@@ -158,6 +158,21 @@ window.PORTFOLIO = [
   }
 ];
 
+/* The Breakdown Show: full episodes from the YouTube channel. Thumbnails live in assets/breakdown (ep1.jpg ... ep6.jpg).
+   To add an episode: add a line below with its YouTube video id, and save its thumbnail as the next epN.jpg. */
+window.BREAKDOWN = {
+  youtube: "https://www.youtube.com/@TheBreakdownShow_EG",
+  instagram: "https://www.instagram.com/break.down.show",
+  episodes: [
+    { n: 1, id: "9rNh_nRh8Nc", guest: "Islam Nasser", title: "Can Hardships Be Turned Into Opportunities?", time: "1:10:55" },
+    { n: 2, id: "ZntbdmnXx28", guest: "Lamiaa Amin", title: "كنت شاطرة في شغلي بس مكنتش أم كويسة!", time: "1:03:53" },
+    { n: 3, id: "Oy7j0WxFgrA", guest: "Omar Sherine", title: "Everyone Told Me to Focus on One Thing!", time: "1:09:58" },
+    { n: 4, id: "n_Yu9ISXwGQ", guest: "Haidy Zakaria", title: "الفشل هو اللي ساعدني أكون شخص أقوى!", time: "56:04" },
+    { n: 5, id: "Y_GGiXTksxM", guest: "Mohamed Hany", title: "كان نفسي الناس تقول عليا مخرج!", time: "1:23:09" },
+    { n: 6, id: "UpmvE2yrWIE", guest: "Randa Moataz", title: "روحت Internship وأنا عندي شركة!", time: "52:07" }
+  ]
+};
+
 /* Years use decimals, so 2026.85 is roughly November 2026. */
 window.TIMELINE = [
   { track: 0, from: 2022, to: 2025, co: "Gammal Tech", role: "Media Director & Podcast Host", dates: "2022 – 2024" },
@@ -169,5 +184,5 @@ window.TIMELINE = [
   { track: 1, from: 2026, to: 2026.85, co: "Alexandria Short Film Festival", role: "Host", dates: "2026 – Now" },
   { track: 3, from: 2026, to: 2026.85, co: "CeasComm", role: "Creative Team Lead", dates: "2026 – Now", now: true },
   { track: 4, from: 2024.33, to: 2024.83, co: "Tayarah World", role: "Creative Copywriter", dates: "May – Oct 2024" },
-  { track: 4, from: 2026, to: 2026.85, co: "The Breakdown Show", role: "Founder", dates: "Jan 2026 – Now", founder: true, link: "https://www.instagram.com/break.down.show" }
+  { track: 4, from: 2026, to: 2026.85, co: "The Breakdown Show", role: "Founder", dates: "Jan 2026 – Now", founder: true, link: "#breakdown" }
 ];

@@ -276,10 +276,10 @@
   var pct = function (y) { return (y - Y0) / (Y1 - Y0) * 100; };
   var tracks = Math.max.apply(null, T.map(function (c) { return c.track; })) + 1;
   function clipHTML(c) {
-    var w = pct(c.to) - pct(c.from), tag = c.link ? 'a' : 'div';
+    var w = pct(c.to) - pct(c.from), tag = c.link ? 'a' : 'div', ext = c.link && c.link.charAt(0) !== '#';
     var cls = 'clip' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + (w < 14 ? ' narrow' : '');
     return '<' + tag + ' class="' + cls + '" data-from="' + c.from + '" style="--c:' + TRACK_C[c.track % TRACK_C.length] + ';left:calc(' + pct(c.from) + '% + 2px);width:calc(' + w + '% - 4px)"' +
-      (c.link ? ' href="' + esc(c.link) + '" target="_blank" rel="noopener"' : '') + '>' +
+      (c.link ? ' href="' + esc(c.link) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') : '') + '>' +
       (c.founder ? '<span class="badge">Founder</span>' : '') +
       '<div><b>' + esc(c.co) + '</b><small>' + esc(c.role) + '</small></div><time>' + esc(c.dates) + '</time></' + tag + '>';
   }
@@ -289,7 +289,7 @@
   for (var y = Y0; y < Y1; y++) years += '<span style="left:' + pct(y) + '%">' + y + '</span>';
   nle.innerHTML = '<div class="nle-ruler">' + years + '</div>' + rows + '<i class="head"></i>';
   $('#expList').innerHTML = T.slice().sort(function (a, b) { return (b.to - a.to) || (b.from - a.from); }).map(function (c) {
-    var name = c.link ? '<a href="' + esc(c.link) + '" target="_blank" rel="noopener">' + esc(c.co) + '</a>' : esc(c.co);
+    var name = c.link ? '<a href="' + esc(c.link) + '"' + (c.link.charAt(0) !== '#' ? ' target="_blank" rel="noopener"' : '') + '>' + esc(c.co) + '</a>' : esc(c.co);
     return '<li class="' + (c.now ? 'now' : '') + (c.founder ? ' founder' : '') + '" style="--c:' + TRACK_C[c.track % TRACK_C.length] + '"><b>' + name + '</b><span>' + esc(c.role) + '</span><time>' + esc(c.dates) + '</time></li>';
   }).join('');
   var clips = $$('.clip', nle);
@@ -418,6 +418,37 @@
   if (!reduced) {
     new IntersectionObserver(function (e) { workVisible = e[0].isIntersecting; }, { threshold: 0.2 }).observe(deck);
     setInterval(auto, 50);
+  }
+
+  /* ---------- The Breakdown Show: embedded episodes (YouTube loads only when played) ---------- */
+  var BD = window.BREAKDOWN;
+  if (BD && $('#bdPlayer')) {
+    var bdPlayer = $('#bdPlayer'), bdList = $('#bdList'), bdCur = 0;
+    var bdThumb = function (e) { return 'assets/breakdown/ep' + e.n + '.jpg'; };
+    bdList.innerHTML = BD.episodes.map(function (e, i) {
+      return '<button type="button" class="bd-ep" data-i="' + i + '"><img src="' + bdThumb(e) + '" alt="" loading="lazy">' +
+        '<span><span class="n">Episode ' + pad2(e.n) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>With ' + esc(e.guest) + '</small></span></button>';
+    }).join('');
+    var bdEps = $$('.bd-ep', bdList);
+    function bdMark(i) { bdEps.forEach(function (b, k) { b.classList.toggle('on', k === i); b.setAttribute('aria-current', k === i ? 'true' : 'false'); }); }
+    function bdFacade(i) {
+      var e = BD.episodes[i];
+      bdPlayer.innerHTML = '<button type="button" class="bd-facade" data-cursor="Play" aria-label="Play episode ' + e.n + ' with ' + esc(e.guest) + '">' +
+        '<img src="' + bdThumb(e) + '" alt="" loading="lazy"><span class="bd-play" aria-hidden="true">▶</span>' +
+        '<span class="bd-meta"><span class="n">Episode ' + pad2(e.n) + ' · ' + e.time + '</span><b dir="auto">' + esc(e.title) + '</b><small>With ' + esc(e.guest) + '</small></span></button>';
+      $('.bd-facade', bdPlayer).onclick = function () { bdPlay(i); };
+    }
+    function bdPlay(i) {
+      var e = BD.episodes[i];
+      bdPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + e.id + '?autoplay=1&rel=0&playsinline=1&modestbranding=1" title="The Breakdown Show, episode ' + e.n + ' with ' + esc(e.guest) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      hideCursor();
+    }
+    bdList.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.bd-ep');
+      if (!b) return;
+      bdCur = +b.dataset.i; bdMark(bdCur); bdPlay(bdCur);
+    });
+    bdMark(0); bdFacade(0);
   }
 
   /* ---------- Reveal, split headings, counters ---------- */
