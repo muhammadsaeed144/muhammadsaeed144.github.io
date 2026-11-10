@@ -208,11 +208,14 @@
 
   /* ---------- Film strip ---------- */
   var strip = $('#strip');
-  strip.innerHTML = ALL.map(function (f, i) {
-    return '<button type="button" class="tile ' + f.fmt + '" data-i="' + i + '" data-cursor="Play">' +
-      '<img src="' + f.poster + '" alt="" loading="lazy" draggable="false">' +
-      '<span class="tile-t"><b>' + esc(f.title) + '</b><span>' + esc(f.project.client) + ' · ' + f.time + '</span></span></button>';
-  }).join('');
+  function tileHTML(copy) {
+    return ALL.map(function (f, i) {
+      return '<button type="button" class="tile ' + f.fmt + '" data-i="' + i + '" data-cursor="Play"' + (copy ? ' aria-hidden="true" tabindex="-1"' : '') + '>' +
+        '<img src="' + f.poster + '" alt="" loading="lazy" draggable="false">' +
+        '<span class="tile-t"><b>' + esc(f.title) + '</b><span>' + esc(f.project.client) + ' · ' + f.time + '</span></span></button>';
+    }).join('');
+  }
+  strip.innerHTML = tileHTML(false) + (reduced ? '' : tileHTML(true));
   var sDragged = false, sDown = false, ssx = 0, ssl = 0;
   strip.addEventListener('pointerdown', function (e) {
     if (e.pointerType !== 'mouse') return;
@@ -233,7 +236,37 @@
     if (!t || sDragged) return;
     openPlayer(ALL, +t.dataset.i, t);
   });
-  function stepStrip(d) { strip.scrollBy({ left: d * strip.clientWidth * 0.7, behavior: reduced ? 'auto' : 'smooth' }); }
+  /* The film row glides on its own; it pauses while hovered, touched or dragged, and loops seamlessly. */
+  var stripTiles = $$('.tile', strip), stripPos = 0, stripHover = false, stripHold = 0, stripVisible = false, stripRunning = false, stripLast = 0;
+  function stripHalf() { return stripTiles.length > ALL.length ? stripTiles[ALL.length].offsetLeft - stripTiles[0].offsetLeft : 0; }
+  strip.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') stripHover = true; });
+  strip.addEventListener('pointerleave', function () { stripHover = false; });
+  strip.addEventListener('touchstart', function () { stripHold = performance.now() + 4000; }, { passive: true });
+  strip.addEventListener('touchend', function () { stripHold = performance.now() + 2500; }, { passive: true });
+  function stripTick(t) {
+    var dt = stripLast ? Math.min(t - stripLast, 60) : 0; stripLast = t;
+    var half = stripHalf();
+    if (Math.abs(strip.scrollLeft - stripPos) > 2) stripPos = strip.scrollLeft;
+    var hold = stripHover || sDown || t < stripHold || !box.hidden || !pl.hidden || document.hidden;
+    if (!hold && half) {
+      stripPos += dt * 0.05;
+      if (stripPos >= half) stripPos -= half;
+      strip.scrollLeft = stripPos;
+    }
+    if (stripVisible) requestAnimationFrame(stripTick); else { stripRunning = false; stripLast = 0; }
+  }
+  if (!reduced) {
+    new IntersectionObserver(function (e) {
+      stripVisible = e[0].isIntersecting;
+      if (stripVisible && !stripRunning) { stripRunning = true; requestAnimationFrame(stripTick); }
+    }).observe(strip);
+  }
+  function stepStrip(d) {
+    stripHold = performance.now() + 1800;
+    var half = stripHalf();
+    if (half && d < 0 && strip.scrollLeft < strip.clientWidth) { strip.scrollLeft += half; stripPos = strip.scrollLeft; }
+    strip.scrollBy({ left: d * strip.clientWidth * 0.7, behavior: reduced ? 'auto' : 'smooth' });
+  }
   $('#stripPrev').onclick = function () { stepStrip(-1); };
   $('#stripNext').onclick = function () { stepStrip(1); };
 
@@ -374,23 +407,17 @@
   });
 
   /* Autoplay: pauses on hover, focus, drag, when off screen, or while a project or film is open. */
-  var DUR = 7000, elapsed = 0, lastT = 0, hovering = false, focusIn = false, workVisible = false, autoRunning = false;
-  deck.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
-  deck.addEventListener('pointerleave', function () { hovering = false; });
-  work.addEventListener('focusin', function () { focusIn = true; });
-  work.addEventListener('focusout', function () { focusIn = false; });
-  function auto(t) {
-    var dt = lastT ? Math.min(t - lastT, 100) : 0; lastT = t;
-    var paused = hovering || focusIn || dDown || !box.hidden || !pl.hidden || document.hidden;
+  var DUR = 6000, elapsed = 0, lastT = 0, workVisible = false, autoRunning = false;
+  function keyboardInWork() { var f = document.activeElement; return !!(f && work.contains(f) && f.matches(':focus-visible')); }
+  function auto() {
+    var t = performance.now(), dt = lastT ? Math.min(t - lastT, 250) : 0; lastT = t;
+    var paused = !workVisible || dDown || keyboardInWork() || !box.hidden || !pl.hidden || document.hidden;
     if (!paused) { elapsed += dt; if (elapsed >= DUR) go(cur + 1); }
     chips[cur].style.setProperty('--p', Math.min(1, elapsed / DUR).toFixed(3));
-    if (workVisible) requestAnimationFrame(auto); else { autoRunning = false; lastT = 0; }
   }
   if (!reduced) {
-    new IntersectionObserver(function (e) {
-      workVisible = e[0].isIntersecting;
-      if (workVisible && !autoRunning) { autoRunning = true; requestAnimationFrame(auto); }
-    }, { threshold: 0.3 }).observe(deck);
+    new IntersectionObserver(function (e) { workVisible = e[0].isIntersecting; }, { threshold: 0.2 }).observe(deck);
+    setInterval(auto, 50);
   }
 
   /* ---------- Reveal, split headings, counters ---------- */
