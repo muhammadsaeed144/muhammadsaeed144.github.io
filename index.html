@@ -24,14 +24,19 @@
 <a class="skip" href="#work">Skip to the work</a>
 
 <div class="boot" aria-hidden="true"><span class="boot-count">00:00:00:00</span><span class="boot-bar"><i></i></span></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
 <header class="nav">
   <a class="brand" href="#top" aria-label="Muhammad Saeed, back to top"><i class="rec"></i>Saeed</a>
   <nav aria-label="Main">
-    <a href="#about">About</a><a href="#experience">Experience</a><a href="#work">Work</a><a href="#reel">Films</a><a href="#contact">Contact</a>
+    <a href="#about">About</a><a href="#experience">Experience</a><a href="#work">Work</a><a href="#reel">Films</a><a href="#clients">Clients</a><a href="#contact">Contact</a>
   </nav>
-  <span class="tc" id="tc" aria-hidden="true">00:00:00:00</span>
+  <div class="nav-end">
+    <span class="tc" id="tc" aria-hidden="true">00:00:00:00</span>
+    <a class="cv-pill" href="assets/Muhammad-Saeed-CV.pdf" download="Muhammad-Saeed-CV.pdf" data-icon="download" data-magnetic>CV</a>
+  </div>
 </header>
 
 <main>
@@ -41,10 +46,11 @@
     <div class="hero-img lit"></div>
     <canvas id="dust"></canvas>
   </div>
+  <div class="floaters" id="floaters" aria-hidden="true"></div>
   <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="hud hud-tl" aria-hidden="true">REC <b>●</b> &nbsp;Portfolio 2026</div>
   <div class="hud hud-tr" aria-hidden="true">14 projects / 34 films</div>
-  <div class="hero-copy">
+  <div class="hero-copy" id="heroCopy">
     <p class="eyebrow">Senior creative copywriter · Storyteller · Filmmaker</p>
     <h1><span class="line"><span>Muhammad</span></span><span class="line"><span>Saeed<em>.</em></span></span></h1>
     <div class="hero-foot">
@@ -55,10 +61,16 @@
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="skills"></div></div>
+
 <section class="about wrap" id="about">
   <div class="about-photo reveal">
     <img src="assets/img/portrait.jpg" alt="Black and white portrait of Muhammad Saeed" width="810" height="1013" loading="lazy">
-    <div class="now-chip"><span>Now</span>Creative Team Lead, CeasComm</div>
+    <div class="now-chip">
+      <span>Now</span>
+      <p>Creative Team Lead, CeasComm</p>
+      <p>Founder, <a href="https://www.instagram.com/break.down.show" rel="noopener" target="_blank">The Breakdown Show</a></p>
+    </div>
   </div>
   <div class="about-copy">
     <p class="label reveal">About</p>
@@ -69,35 +81,53 @@
       <div><dt>Projects delivered</dt><dd data-count="35">35+</dd></div>
       <div><dt>Brands served</dt><dd data-count="25">25+</dd></div>
     </dl>
+    <div class="ctas reveal">
+      <a class="btn btn-grad" href="assets/Muhammad-Saeed-CV.pdf" download="Muhammad-Saeed-CV.pdf" data-icon="download" data-magnetic>Download my CV</a>
+      <a class="btn btn-ghost" href="#work" data-magnetic>See the work</a>
+    </div>
   </div>
 </section>
 
 <section class="exp" id="experience">
   <div class="wrap">
     <p class="label reveal">Experience</p>
-    <h2 class="reveal">Where I've worked</h2>
+    <h2 class="reveal">Where I've <em>worked</em></h2>
     <div class="nle reveal" id="nle"></div>
     <ol class="exp-list" id="expList"></ol>
   </div>
 </section>
 
-<section class="work wrap" id="work">
-  <div class="section-head">
-    <div><p class="label reveal">The work</p><h2 class="reveal">Selected projects</h2></div>
-    <p class="count reveal">14 projects<br>34 films</p>
+<section class="work" id="work">
+  <div class="wrap section-head">
+    <div><p class="label reveal">The work</p><h2 class="reveal">Selected <em>projects</em></h2></div>
+    <div class="deck-ctl reveal">
+      <span class="deck-count" id="deckCount">01 / 14</span>
+      <button type="button" class="round" id="deckPrev" aria-label="Previous project">←</button>
+      <button type="button" class="round" id="deckNext" aria-label="Next project">→</button>
+    </div>
   </div>
-  <div class="grid" id="grid"></div>
+  <div class="deck" id="deck" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Selected projects. Use the arrow keys to move, Enter to open."></div>
+  <div class="deck-index" id="deckIndex"></div>
+  <p class="deck-hint" aria-hidden="true">Drag, swipe or use the arrows · Click a project to open it</p>
 </section>
 
 <section class="reel" id="reel">
   <div class="wrap section-head">
-    <div><p class="label reveal">The reel</p><h2 class="reveal">Every film</h2></div>
+    <div><p class="label reveal">The reel</p><h2 class="reveal">Every <em>film</em></h2></div>
     <div class="strip-ctl reveal">
-      <button type="button" id="stripPrev" aria-label="Scroll films back">←</button>
-      <button type="button" id="stripNext" aria-label="Scroll films forward">→</button>
+      <button type="button" class="round" id="stripPrev" aria-label="Scroll films back">←</button>
+      <button type="button" class="round" id="stripNext" aria-label="Scroll films forward">→</button>
     </div>
   </div>
   <div class="strip" id="strip" tabindex="0" aria-label="All 34 films"></div>
+</section>
+
+<section class="clients" id="clients">
+  <div class="wrap section-head">
+    <div><p class="label reveal">Clients</p><h2 class="reveal">Brands I've <em>worked with</em></h2></div>
+  </div>
+  <div class="logos" aria-label="Client logos"><div class="logos-track" id="logos"></div></div>
+  <div class="names" aria-hidden="true"><div class="names-track" id="names"></div></div>
 </section>
 
 <section class="contact" id="contact">
@@ -105,17 +135,23 @@
   <div class="wrap">
     <p class="label reveal">Thanks for watching</p>
     <h2 class="reveal">Let's make<br><em>the next one.</em></h2>
+    <div class="ctas reveal">
+      <a class="btn btn-wa" href="https://wa.me/201094204021" target="_blank" rel="noopener" data-icon="whatsapp" data-magnetic>Chat on WhatsApp</a>
+      <a class="btn btn-grad" href="assets/Muhammad-Saeed-CV.pdf" download="Muhammad-Saeed-CV.pdf" data-icon="download" data-magnetic>Download my CV</a>
+    </div>
     <ul class="links reveal">
       <li><span>Email</span><a href="mailto:muuhammad.saeed192@gmail.com">muuhammad.saeed192@gmail.com</a></li>
       <li><span>Phone</span><a href="tel:+201094204021" dir="ltr">+20 109 420 4021</a></li>
-      <li><span>Website</span><a href="https://sa3eed.com" rel="noopener">sa3eed.com</a></li>
-      <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/muhammadsaeeed" rel="noopener">/in/muhammadsaeeed</a></li>
+      <li><span>Website</span><a href="https://www.sa3eed.com">sa3eed.com</a></li>
+      <li><span>Follow</span><div class="socials" id="socials"></div></li>
     </ul>
   </div>
 </section>
 </main>
 
-<footer class="foot wrap"><span>© 2026 Muhammad Saeed</span><span>End of reel</span></footer>
+<footer class="foot wrap"><span>© 2026 Muhammad Saeed</span><div class="socials small" id="footSocials"></div><span>End of reel</span></footer>
+
+<a class="wa" id="wa" href="https://wa.me/201094204021" target="_blank" rel="noopener" aria-label="Chat with Muhammad on WhatsApp"><span class="wa-ic" data-icon="whatsapp"></span><span class="wa-t">Chat on WhatsApp</span></a>
 
 <section class="case" id="case" role="dialog" aria-modal="true" aria-labelledby="caseTitle" hidden></section>
 
@@ -126,15 +162,15 @@
     <button type="button" id="pClose" aria-label="Close film">Close ✕</button>
   </div>
   <div class="player-stage">
-    <button type="button" class="pnav" id="pPrev" aria-label="Previous film">←</button>
+    <button type="button" class="pnav round" id="pPrev" aria-label="Previous film">←</button>
     <video id="pVideo" controls playsinline preload="none"></video>
-    <button type="button" class="pnav" id="pNext" aria-label="Next film">→</button>
+    <button type="button" class="pnav round" id="pNext" aria-label="Next film">→</button>
   </div>
 </div>
 
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 
-<noscript><p style="padding:24px;color:#fff">This portfolio uses JavaScript to play the films. Email muuhammad.saeed192@gmail.com to get in touch.</p></noscript>
+<noscript><p style="padding:24px;color:#fff">This portfolio uses JavaScript to play the films. Email muuhammad.saeed192@gmail.com or <a href="assets/Muhammad-Saeed-CV.pdf">download the CV</a>.</p></noscript>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
