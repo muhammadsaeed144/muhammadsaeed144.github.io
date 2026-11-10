@@ -185,8 +185,8 @@ h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-
 .about::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24%;z-index:2;pointer-events:none;background:linear-gradient(rgba(6,11,26,0),var(--bg))}
 .about-word{position:absolute;left:50%;top:clamp(70px,9vh,110px);width:min(96vw,1640px);height:auto;z-index:0;overflow:visible;translate:-50% 0}
 .about-word text{font-family:var(--sans);font-weight:800;font-size:330px}
-.about-person{position:absolute;left:50%;bottom:0;height:min(88%,900px);width:auto;max-width:none;z-index:1;translate:-50% 0;
-  filter:contrast(1.06);-webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 100%);mask-image:linear-gradient(to bottom,#000 70%,transparent 100%)}
+.about-person{position:absolute;left:50%;bottom:0;height:min(88%,calc(100% - 110px),900px);width:auto;max-width:none;z-index:1;translate:-50% 0;
+  filter:contrast(1.04) brightness(.9);-webkit-mask-image:linear-gradient(to bottom,#000 66%,transparent 98%);mask-image:linear-gradient(to bottom,#000 66%,transparent 98%)}
 .js .about-word.reveal{transform:translateY(40px)}
 .js .about-person.reveal{transform:translateY(60px)}
 .js .about-word.reveal.in,.js .about-person.reveal.in{transform:none}
