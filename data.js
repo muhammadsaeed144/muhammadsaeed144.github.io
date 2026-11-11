@@ -186,15 +186,40 @@ window.ASFF = {
 };
 
 /* Years use decimals, so 2026.85 is roughly November 2026. */
+/* Each role: colour (shown on hover), place, type, a one-line summary and key points.
+   Leave "points" empty ([]) when there is nothing to add yet. */
 window.TIMELINE = [
-  { track: 0, from: 2022, to: 2025, co: "Gammal Tech", role: "Media Director & Podcast Host", dates: "2022 – 2024" },
-  { track: 1, from: 2023, to: 2026, co: "iSkala Business Solutions", role: "Video Producer", dates: "2023 – 2025" },
-  { track: 2, from: 2023, to: 2024, co: "NEOM", role: "Content Director", dates: "2023" },
-  { track: 3, from: 2024, to: 2025, co: "The LEGO Group", role: "Videographer", dates: "2024" },
-  { track: 2, from: 2024, to: 2026.85, co: "Ennab Agency", role: "Senior Creative Copywriter", dates: "2024 – Nov 2026" },
-  { track: 0, from: 2025, to: 2026.85, co: "Blue Holding", role: "Senior Creative Copywriter", dates: "2025 – 2026" },
-  { track: 1, from: 2026, to: 2026.85, co: "Alexandria Short Film Festival", role: "Host", dates: "2026 – Now", link: "#festival" },
-  { track: 3, from: 2026, to: 2026.85, co: "CeasComm", role: "Creative Team Lead", dates: "2026 – Now", now: true },
-  { track: 4, from: 2024.33, to: 2024.83, co: "Tayarah World", role: "Creative Copywriter", dates: "May – Oct 2024" },
-  { track: 4, from: 2026, to: 2026.85, co: "The Breakdown Show", role: "Founder", dates: "Jan 2026 – Now", founder: true, link: "#breakdown" }
+  { track: 0, from: 2022, to: 2025, co: "Gammal Tech", role: "Media Director & Podcast Host", dates: "2022 – 2024", color: "#ff5fa2",
+    place: "Alexandria, Egypt", type: "Full-time",
+    summary: "Led social media, video and podcast production for a programming-education brand.",
+    points: ["Social media strategy that lifted sales 20% within two months", "Produced and hosted Egypt's first podcast on programming education", "Built and led a media team; website traffic up 106%", "Creative direction from script to final production"] },
+  { track: 1, from: 2023, to: 2026, co: "iSkala Business Solutions", role: "Video Producer", dates: "2023 – 2025", color: "#22d3ee",
+    place: "Alexandria, Egypt", type: "Part-time",
+    summary: "Turned raw footage into courses and brand stories.",
+    points: ["Edited and assembled footage into high-quality courses", "Produced short- and long-form media for brand storytelling"] },
+  { track: 2, from: 2023, to: 2024, co: "NEOM", role: "Content Director", dates: "2023", color: "#2dd4bf",
+    place: "Saudi Arabia", type: "Freelance",
+    summary: "Content director for the NEOM Upskill Filmmaking Camp, Nov – Dec 2023.",
+    points: ["Led a 4-week camp built on filmmaking skills and self-expression", "Designed the curriculum: scriptwriting, shooting, editing and post", "Shaped content for participants at every skill level"] },
+  { track: 3, from: 2024, to: 2025, co: "The LEGO Group", role: "Videographer", dates: "2024", color: "#facc15",
+    summary: "Videographer for The LEGO Group.", points: [] },
+  { track: 2, from: 2024, to: 2026.85, co: "Ennab Agency", role: "Senior Creative Copywriter", dates: "2024 – Nov 2026", color: "#a78bfa",
+    summary: "Senior creative copywriter at Ennab Agency.", points: [] },
+  { track: 0, from: 2025, to: 2026.85, co: "Blue Holding", role: "Senior Creative Copywriter", dates: "2025 – 2026", color: "#4f7cff",
+    place: "Alexandria, Egypt", type: "On-site",
+    summary: "Copy for ads, commercials, teasers, websites, company profiles and event scripts.",
+    points: ["Took ideas from brief to concept to final, on-brand solution", "MC content and storytelling concepts for live and corporate events", "Medical and automotive brands", "Guided the shoot and the editors through post-production"] },
+  { track: 1, from: 2026, to: 2026.85, co: "Alexandria Short Film Festival", role: "Host", dates: "2026 – Now", color: "#e0b23a", link: "#festival",
+    place: "Alexandria, Egypt",
+    summary: "Host of the festival's official podcast for its 12th edition.",
+    points: ["4 episodes with filmmakers, critics and artists", "Conversations on making, judging and designing short film"] },
+  { track: 3, from: 2026, to: 2026.85, co: "CeasComm", role: "Creative Team Lead", dates: "2026 – Now", color: "#ff3d2e", now: true,
+    summary: "Leading the creative team at CeasComm.", points: [] },
+  { track: 4, from: 2024.33, to: 2024.83, co: "Tayarah World", role: "Creative Copywriter", dates: "May – Oct 2024", color: "#34d399",
+    place: "New Cairo, Egypt", type: "Hybrid",
+    summary: "Turned client briefs into ideas and full copy.",
+    points: ["Ads in every genre, branded content and episodic drama storylines", "Campaign concepts with designers and strategists", "Delivered on tight deadlines and budgets"] },
+  { track: 4, from: 2026, to: 2026.85, co: "The Breakdown Show", role: "Founder", dates: "Jan 2026 – Now", color: "#ff7f00", founder: true, link: "#breakdown",
+    summary: "Founded and built a creative-education talk show, end to end.",
+    points: ["150K+ organic Instagram reach in the first 30 days", "Concept, brand identity, technical setup, hosting and post", "Long-form audio and video production"] }
 ];

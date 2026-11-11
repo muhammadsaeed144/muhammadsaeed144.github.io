@@ -289,26 +289,89 @@
 
   /* ---------- Experience: edit timeline ---------- */
   var nle = $('#nle'), Y0 = 2022, Y1 = 2027, NOW = 2026.85;
-  var TRACK_C = ['#ff5a4d', '#22d3ee', '#a78bfa', '#ffb020', '#ff3d8b'];
   var pct = function (y) { return (y - Y0) / (Y1 - Y0) * 100; };
   var tracks = Math.max.apply(null, T.map(function (c) { return c.track; })) + 1;
-  function clipHTML(c) {
+  /* Dark text on light role colours, white text on deep ones */
+  function inkFor(hex) {
+    var n = parseInt(hex.slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255;
+    return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0a0f1f' : '#ffffff';
+  }
+  function meta(c) { return [c.dates, c.place, c.type].filter(Boolean).join(' · '); }
+  function detailHTML(c) {
+    return '<p class="xd-sum">' + esc(c.summary || '') + '</p>' +
+      (c.points && c.points.length ? '<ul>' + c.points.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' : '') +
+      (c.link ? '<span class="xd-more">' + (c.link.charAt(0) === '#' ? 'See the section ↓' : 'Open ↗') + '</span>' : '');
+  }
+  function clipHTML(c, i) {
     var w = pct(c.to) - pct(c.from), tag = c.link ? 'a' : 'div', ext = c.link && c.link.charAt(0) !== '#';
     var cls = 'clip' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + (w < 14 ? ' narrow' : '');
-    return '<' + tag + ' class="' + cls + '" data-from="' + c.from + '" style="--c:' + TRACK_C[c.track % TRACK_C.length] + ';left:calc(' + pct(c.from) + '% + 2px);width:calc(' + w + '% - 4px)"' +
+    return '<' + tag + ' class="' + cls + '" data-i="' + i + '" data-from="' + c.from + '" tabindex="0" aria-describedby="expCard"' +
+      ' style="--c:' + (c.color || '#4f7cff') + ';--ink:' + inkFor(c.color || '#4f7cff') + ';left:calc(' + pct(c.from) + '% + 2px);width:calc(' + w + '% - 4px)"' +
       (c.link ? ' href="' + esc(c.link) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') : '') + '>' +
       (c.founder ? '<span class="badge">Founder</span>' : '') +
-      '<div><b>' + esc(c.co) + '</b><small>' + esc(c.role) + '</small></div><time>' + esc(c.dates) + '</time></' + tag + '>';
+      '<div><b><i class="dot"></i>' + esc(c.co) + '</b><small>' + esc(c.role) + '</small></div><time>' + esc(c.dates) + '</time></' + tag + '>';
   }
   var rows = '';
-  for (var tr = 0; tr < tracks; tr++) rows += '<div class="nle-track">' + T.filter(function (c) { return c.track === tr; }).map(clipHTML).join('') + '</div>';
+  for (var tr = 0; tr < tracks; tr++) {
+    rows += '<div class="nle-track">' + T.map(function (c, i) { return c.track === tr ? clipHTML(c, i) : ''; }).join('') + '</div>';
+  }
   var years = '';
   for (var y = Y0; y < Y1; y++) years += '<span style="left:' + pct(y) + '%">' + y + '</span>';
-  nle.innerHTML = '<div class="nle-ruler">' + years + '</div>' + rows + '<i class="head"></i>';
-  $('#expList').innerHTML = T.slice().sort(function (a, b) { return (b.to - a.to) || (b.from - a.from); }).map(function (c) {
-    var name = c.link ? '<a href="' + esc(c.link) + '"' + (c.link.charAt(0) !== '#' ? ' target="_blank" rel="noopener"' : '') + '>' + esc(c.co) + '</a>' : esc(c.co);
-    return '<li class="' + (c.now ? 'now' : '') + (c.founder ? ' founder' : '') + '" style="--c:' + TRACK_C[c.track % TRACK_C.length] + '"><b>' + name + '</b><span>' + esc(c.role) + '</span><time>' + esc(c.dates) + '</time></li>';
+  nle.innerHTML = '<div class="nle-ruler">' + years + '</div>' + rows + '<i class="head"></i>' +
+    '<div class="exp-card" id="expCard" role="tooltip" aria-hidden="true"></div>';
+
+  /* Hover (or keyboard focus) on a clip: it takes its colour and a detail card slides out beside it */
+  var card = $('#expCard'), hideT = 0, activeClip = null;
+  function showCard(el) {
+    clearTimeout(hideT);
+    var c = T[+el.dataset.i];
+    if (activeClip && activeClip !== el) activeClip.classList.remove('active');
+    activeClip = el; el.classList.add('active'); nle.classList.add('has-active');
+    card.style.setProperty('--c', c.color || '#4f7cff');
+    card.innerHTML = '<div class="xd-top"><b>' + esc(c.co) + '</b><span>' + esc(c.role) + '</span></div><p class="xd-meta">' + esc(meta(c)) + '</p>' + detailHTML(c);
+    var nr = nle.getBoundingClientRect(), r = el.getBoundingClientRect();
+    var cw = Math.min(400, nle.clientWidth - 8);
+    card.style.width = cw + 'px';
+    var left = Math.max(0, Math.min(r.left - nr.left, nle.clientWidth - cw));
+    card.style.left = left + 'px';
+    var ch = card.offsetHeight, below = r.bottom - nr.top + 10, above = r.top - nr.top - ch - 10;
+    var useAbove = below + ch > nle.clientHeight + 40 && above > 0;
+    card.style.top = (useAbove ? above : below) + 'px';
+    card.classList.toggle('up', useAbove);
+    card.setAttribute('aria-hidden', 'false');
+    card.classList.remove('show'); void card.offsetWidth; card.classList.add('show');
+  }
+  function hideCard() {
+    hideT = setTimeout(function () {
+      card.classList.remove('show'); card.setAttribute('aria-hidden', 'true');
+      if (activeClip) activeClip.classList.remove('active');
+      activeClip = null; nle.classList.remove('has-active');
+    }, 90);
+  }
+  $$('.clip', nle).forEach(function (el) {
+    el.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') showCard(el); });
+    el.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') hideCard(); });
+    el.addEventListener('focus', function () { showCard(el); });
+    el.addEventListener('blur', hideCard);
+    el.addEventListener('click', function (e) {
+      if (el.tagName === 'A') return;
+      if (activeClip === el && card.classList.contains('show')) hideCard(); else showCard(el);
+    });
+  });
+
+  /* Phone list: tap a role to open its details */
+  $('#expList').innerHTML = T.map(function (c, i) { return { c: c, i: i }; }).sort(function (a, b) { return (b.c.to - a.c.to) || (b.c.from - a.c.from); }).map(function (o) {
+    var c = o.c;
+    return '<li class="xi' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + '" style="--c:' + (c.color || '#4f7cff') + '">' +
+      '<button type="button" class="xi-head" aria-expanded="false" aria-controls="xi' + o.i + '"><b><i class="dot"></i>' + esc(c.co) + '</b><span>' + esc(c.role) + '</span><time>' + esc(c.dates) + '</time><i class="xi-plus" aria-hidden="true"></i></button>' +
+      '<div class="xi-body" id="xi' + o.i + '"><div><p class="xd-meta">' + esc([c.place, c.type].filter(Boolean).join(' · ')) + '</p>' + detailHTML(c).replace('<span class="xd-more">', c.link ? '<a class="xd-more" href="' + esc(c.link) + '">' : '<span class="xd-more">').replace(/See the section ↓<\/span>/, 'See the section ↓</a>') + '</div></div></li>';
   }).join('');
+  $('#expList').addEventListener('click', function (e) {
+    var b = e.target.closest('.xi-head');
+    if (!b) return;
+    var li = b.parentNode, open = !li.classList.contains('open');
+    li.classList.toggle('open', open); b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
   var clips = $$('.clip', nle);
   function setHead(v) {
     nle.style.setProperty('--p', v);
