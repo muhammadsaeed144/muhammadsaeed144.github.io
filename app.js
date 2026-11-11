@@ -296,6 +296,12 @@
     var n = parseInt(hex.slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255;
     return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#0a0f1f' : '#ffffff';
   }
+  function tint(hex) {
+    if (inkFor(hex) !== '#ffffff') return hex;
+    var n = parseInt(hex.slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255, k = 0.55;
+    var m = function (v) { return Math.round(v + (255 - v) * k); };
+    return 'rgb(' + m(r) + ',' + m(g) + ',' + m(b) + ')';
+  }
   function meta(c) { return [c.dates, c.place, c.type].filter(Boolean).join(' · '); }
   function detailHTML(c) {
     return '<p class="xd-sum">' + esc(c.summary || '') + '</p>' +
@@ -306,7 +312,7 @@
     var w = pct(c.to) - pct(c.from), tag = c.link ? 'a' : 'div', ext = c.link && c.link.charAt(0) !== '#';
     var cls = 'clip' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + (w < 14 ? ' narrow' : '');
     return '<' + tag + ' class="' + cls + '" data-i="' + i + '" data-from="' + c.from + '" tabindex="0" aria-describedby="expCard"' +
-      ' style="--c:' + (c.color || '#4f7cff') + ';--ink:' + inkFor(c.color || '#4f7cff') + ';left:calc(' + pct(c.from) + '% + 2px);width:calc(' + w + '% - 4px)"' +
+      ' style="--c:' + (c.color || '#4f7cff') + ';--ct:' + tint(c.color || '#4f7cff') + ';--ink:' + inkFor(c.color || '#4f7cff') + ';left:calc(' + pct(c.from) + '% + 2px);width:calc(' + w + '% - 4px)"' +
       (c.link ? ' href="' + esc(c.link) + '"' + (ext ? ' target="_blank" rel="noopener"' : '') : '') + '>' +
       (c.founder ? '<span class="badge">Founder</span>' : '') +
       '<div><b><i class="dot"></i>' + esc(c.co) + '</b><small>' + esc(c.role) + '</small></div><time>' + esc(c.dates) + '</time></' + tag + '>';
@@ -328,6 +334,7 @@
     if (activeClip && activeClip !== el) activeClip.classList.remove('active');
     activeClip = el; el.classList.add('active'); nle.classList.add('has-active');
     card.style.setProperty('--c', c.color || '#4f7cff');
+    card.style.setProperty('--ct', tint(c.color || '#4f7cff'));
     card.innerHTML = '<div class="xd-top"><b>' + esc(c.co) + '</b><span>' + esc(c.role) + '</span></div><p class="xd-meta">' + esc(meta(c)) + '</p>' + detailHTML(c);
     var nr = nle.getBoundingClientRect(), r = el.getBoundingClientRect();
     var cw = Math.min(400, nle.clientWidth - 8);
@@ -362,7 +369,7 @@
   /* Phone list: tap a role to open its details */
   $('#expList').innerHTML = T.map(function (c, i) { return { c: c, i: i }; }).sort(function (a, b) { return (b.c.to - a.c.to) || (b.c.from - a.c.from); }).map(function (o) {
     var c = o.c;
-    return '<li class="xi' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + '" style="--c:' + (c.color || '#4f7cff') + '">' +
+    return '<li class="xi' + (c.now ? ' now' : '') + (c.founder ? ' founder' : '') + '" style="--c:' + (c.color || '#4f7cff') + ';--ct:' + tint(c.color || '#4f7cff') + '">' +
       '<button type="button" class="xi-head" aria-expanded="false" aria-controls="xi' + o.i + '"><b><i class="dot"></i>' + esc(c.co) + '</b><span>' + esc(c.role) + '</span><time>' + esc(c.dates) + '</time><i class="xi-plus" aria-hidden="true"></i></button>' +
       '<div class="xi-body" id="xi' + o.i + '"><div><p class="xd-meta">' + esc([c.place, c.type].filter(Boolean).join(' · ')) + '</p>' + detailHTML(c).replace('<span class="xd-more">', c.link ? '<a class="xd-more" href="' + esc(c.link) + '">' : '<span class="xd-more">').replace(/See the section ↓<\/span>/, 'See the section ↓</a>') + '</div></div></li>';
   }).join('');
