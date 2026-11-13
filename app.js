@@ -495,7 +495,10 @@
 
   /* Autoplay: pauses on hover, focus, drag, when off screen, or while a project or film is open. */
   var DUR = 6000, elapsed = 0, lastT = 0, workVisible = false, autoRunning = false;
-  function keyboardInWork() { var f = document.activeElement; return !!(f && work.contains(f) && f.matches(':focus-visible')); }
+  function keyboardInWork() {
+    var f = document.activeElement;
+    try { return !!(f && work.contains(f) && f.matches(':focus-visible')); } catch (e) { return false; }
+  }
   function auto() {
     var t = performance.now(), dt = lastT ? Math.min(t - lastT, 250) : 0; lastT = t;
     var paused = !workVisible || dDown || keyboardInWork() || !box.hidden || !pl.hidden || document.hidden;
