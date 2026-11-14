@@ -76,18 +76,16 @@
     root.classList.remove('wait'); root.classList.add('go');
     if (withSound && actx) {
       var play = function () { try { clack(actx.currentTime + Math.max(0.02, (t0 + 590 - performance.now()) / 1000)); window.__clacked = true; } catch (e) {} };
-      try { var p = actx.state === 'running' ? null : actx.resume(); if (p && p.then) p.then(play, function () {}); else play(); } catch (e) {}
+      try {
+        if (actx.state === 'running') play();
+        else { actx.resume(); setTimeout(function () { if (actx.state === 'running' && performance.now() - t0 < 500) play(); }, 200); }
+      } catch (e) {}
     }
     setTimeout(function () { root.classList.add('ready'); }, 30);
     setTimeout(function () { var b = $('.boot'); if (b) b.remove(); }, 2400);
   }
   if (reduced || !$('.boot')) roll(false);
-  else if (actx && actx.state === 'running') setTimeout(function () { roll(true); }, 950);
-  else {
-    GEST.forEach(function (ev) { addEventListener(ev, onGesture, true); });
-    setTimeout(function () { if (!went) root.classList.add('wait'); }, 900);
-    setTimeout(function () { roll(false); }, 4500);
-  }
+  else setTimeout(function () { roll(true); }, 950);
   if (boot) {
     var bt = setInterval(function () {
       var e = performance.now() - start;
