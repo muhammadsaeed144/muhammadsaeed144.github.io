@@ -42,12 +42,19 @@ body{background:radial-gradient(120% 80% at 50% 0%,#0b1430 0%,var(--bg) 60%) fix
 
 /* boot: clapperboard */
 .boot{display:none}
-.js .boot{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
-  animation:bootOut 1s var(--ease-smooth) 1.9s forwards}
-.clap{width:min(420px,78vw);transform-origin:50% 60%;animation:clapIn .9s var(--ease-smooth) both, clapAway 1s var(--ease-smooth) 1.75s forwards}
+.js .boot{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.js.go .boot{animation:bootOut 1s var(--ease-smooth) 1.2s forwards}
+.js.wait .boot{cursor:pointer}
+.boot-hint{height:16px;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-soft);opacity:0;transition:opacity .5s}
+.wait .boot-hint{opacity:1;animation:hintPulse 1.6s ease-in-out infinite}
+.go .boot-hint{opacity:0;animation:none}
+@keyframes hintPulse{50%{opacity:.45}}
+.clap{width:min(420px,78vw);transform-origin:50% 60%;animation:clapIn .9s var(--ease-smooth) both}
+.go .clap{animation:clapIn .9s var(--ease-smooth) both, clapAway 1s var(--ease-smooth) 1.05s forwards}
 .clap-stick,.clap-base{height:clamp(34px,4.4vw,46px);border-radius:6px 6px 2px 2px;border:1px solid #24304f;
   background:repeating-linear-gradient(-58deg,#f5f5f7 0 22px,#08101f 22px 44px)}
-.clap-stick{transform-origin:2% 100%;transform:rotate(-24deg);animation:snap .5s cubic-bezier(.7,0,.84,0) .78s forwards;margin-bottom:5px;position:relative}
+.clap-stick{transform-origin:2% 100%;transform:rotate(-24deg);margin-bottom:5px;position:relative}
+.go .clap-stick{animation:snap .5s cubic-bezier(.7,0,.84,0) .1s forwards}
 .clap-stick::after{content:"";position:absolute;left:6px;bottom:-9px;width:12px;height:12px;border-radius:50%;background:#141d3a;border:1px solid #33405f}
 .clap-base{border-radius:2px;background:repeating-linear-gradient(58deg,#f5f5f7 0 22px,#08101f 22px 44px)}
 .clap-body{margin-top:4px;border:1px solid #24304f;border-radius:3px 3px 10px 10px;background:#08101f;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:#d4d4d8}
@@ -62,8 +69,10 @@ body{background:radial-gradient(120% 80% at 50% 0%,#0b1430 0%,var(--bg) 60%) fix
 .clap-body b{display:block;font-weight:500;font-size:clamp(13px,1.6vw,16px);color:#f5f5f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .clap-body .r1 b{font-family:var(--sans);text-transform:none;letter-spacing:-.02em;font-size:clamp(20px,2.6vw,26px)}
 .clap-body .blue{color:var(--blue-soft)}
-.boot-count{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--dim);font-variant-numeric:tabular-nums;animation:fadeOut .4s ease 1.6s forwards}
-.boot-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:flash .5s ease-out 1.26s}
+.boot-count{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--dim);font-variant-numeric:tabular-nums}
+.go .boot-count{animation:fadeOut .4s ease .9s forwards}
+.boot-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.go .boot-flash{animation:flash .5s ease-out .58s}
 @keyframes clapIn{from{opacity:0;transform:translateY(24px) scale(.96)}}
 @keyframes snap{0%{transform:rotate(-24deg)}100%{transform:rotate(0)}}
 @keyframes flash{0%{opacity:0}12%{opacity:.09}100%{opacity:0}}
@@ -129,8 +138,9 @@ h1{font-weight:500;font-size:clamp(48px,13.4vw,236px);line-height:.88;letter-spa
 h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-.055em;color:var(--red)}
 .line{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
 .line>span{display:block}
-.js .line>span{transform:translateY(105%);animation:rise 1.6s var(--ease-smooth) 2.25s forwards}
-.js .line:nth-child(2)>span{animation-delay:2.37s}
+.js .line>span{transform:translateY(105%)}
+.js.go .line>span{animation:rise 1.6s var(--ease-smooth) 1.55s forwards}
+.js.go .line:nth-child(2)>span{animation-delay:1.67s}
 @keyframes rise{to{transform:none}}
 .hero-foot{display:grid;grid-template-columns:1fr auto auto;gap:32px;align-items:end;padding-right:70px;margin-top:clamp(20px,4vh,36px);padding-top:16px;border-top:1px solid var(--line)}
 .tagline{font-weight:300;font-size:clamp(20px,1.9vw,27px);line-height:1.25;letter-spacing:-.01em}
@@ -148,7 +158,7 @@ h1 em{font-family:var(--sans);font-style:normal;font-weight:500;letter-spacing:-
   box-shadow:0 18px 40px -20px rgba(0,0,0,.8);animation:bob 8s ease-in-out infinite;animation-delay:calc(var(--k) * -1.15s)}
 .fl-ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--blue-soft);background:var(--blue-dim);border:1px solid rgba(79,124,255,.32)}
 .fl-ic .ic{width:16px;height:16px}
-.js .fl-in{opacity:0;scale:.7;transition:opacity 1.4s var(--ease-smooth),scale 1.4s var(--ease-smooth);transition-delay:calc(2.5s + var(--k) * .12s)}
+.js .fl-in{opacity:0;scale:.7;transition:opacity 1.4s var(--ease-smooth),scale 1.4s var(--ease-smooth);transition-delay:calc(1.8s + var(--k) * .12s)}
 .js.ready .fl-in{opacity:1;scale:1}
 @keyframes bob{50%{transform:translateY(-9px)}}
 
@@ -421,7 +431,7 @@ a.clip{cursor:pointer}
 .wa-t{max-width:0;overflow:hidden;white-space:nowrap;transition:max-width .5s var(--ease),padding .5s var(--ease)}
 .wa:hover .wa-t,.wa:focus-visible .wa-t{max-width:180px;padding-right:20px}
 .js .wa{opacity:0;transform:translateY(20px)}
-.js.ready .wa{opacity:1;transform:none;transition-delay:2.8s}
+.js.ready .wa{opacity:1;transform:none;transition-delay:2.1s}
 
 /* case */
 .case{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;animation:caseIn 1s var(--ease-smooth);--tint:var(--blue)}

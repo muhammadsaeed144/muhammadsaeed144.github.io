@@ -49,8 +49,45 @@
     return pad2(h) + ':' + pad2(m % 60) + ':' + pad2(s % 60) + ':' + pad2(f % 25);
   }
   if (!reduced) setInterval(function () { tc.textContent = code(performance.now() - start); }, 80);
-  setTimeout(function () { var b = $('.boot'); if (b) b.remove(); }, 3000);
-  requestAnimationFrame(function () { setTimeout(function () { root.classList.add('ready'); }, 30); });
+  /* Intro: the slate snaps shut with a clack. Browsers only allow sound after a tap or click,
+     so when sound is blocked the slate waits open for a tap, then carries on silently after a few seconds. */
+  var AC = window.AudioContext || window.webkitAudioContext, actx = null, went = false;
+  try { if (AC && !reduced) actx = new AC(); } catch (e) { actx = null; }
+  function clack(t) {
+    var sr = actx.sampleRate, len = Math.floor(sr * 0.22), buf = actx.createBuffer(1, len, sr), d = buf.getChannelData(0), i;
+    for (i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    var n = actx.createBufferSource(); n.buffer = buf;
+    var hp = actx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 500;
+    var bp = actx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1700; bp.Q.value = 0.9;
+    var g = actx.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.9, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    n.connect(hp); hp.connect(bp); bp.connect(g); g.connect(actx.destination); n.start(t);
+    var o = actx.createOscillator(), og = actx.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(240, t); o.frequency.exponentialRampToValueAtTime(90, t + 0.08);
+    og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.5, t + 0.003); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    o.connect(og); og.connect(actx.destination); o.start(t); o.stop(t + 0.15);
+  }
+  var GEST = ['pointerup', 'touchend', 'click', 'keydown'];
+  function onGesture() { roll(true); }
+  function roll(withSound) {
+    if (went) return; went = true;
+    var t0 = performance.now();
+    GEST.forEach(function (ev) { removeEventListener(ev, onGesture, true); });
+    root.classList.remove('wait'); root.classList.add('go');
+    if (withSound && actx) {
+      var play = function () { try { clack(actx.currentTime + Math.max(0.02, (t0 + 590 - performance.now()) / 1000)); window.__clacked = true; } catch (e) {} };
+      try { var p = actx.state === 'running' ? null : actx.resume(); if (p && p.then) p.then(play, function () {}); else play(); } catch (e) {}
+    }
+    setTimeout(function () { root.classList.add('ready'); }, 30);
+    setTimeout(function () { var b = $('.boot'); if (b) b.remove(); }, 2400);
+  }
+  if (reduced || !$('.boot')) roll(false);
+  else if (actx && actx.state === 'running') setTimeout(function () { roll(true); }, 950);
+  else {
+    GEST.forEach(function (ev) { addEventListener(ev, onGesture, true); });
+    setTimeout(function () { if (!went) root.classList.add('wait'); }, 900);
+    setTimeout(function () { roll(false); }, 4500);
+  }
   if (boot) {
     var bt = setInterval(function () {
       var e = performance.now() - start;
